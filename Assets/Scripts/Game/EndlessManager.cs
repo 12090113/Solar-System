@@ -9,6 +9,7 @@ public class EndlessManager : MonoBehaviour {
     Ship ship;
     PlayerController player;
     Camera playerCamera;
+    OrbitDebugDisplay orbitLines;
 
     public event System.Action PostFloatingOriginUpdate;
 
@@ -25,13 +26,13 @@ public class EndlessManager : MonoBehaviour {
         }
 
         playerCamera = Camera.main;
+
+        orbitLines = FindObjectOfType<OrbitDebugDisplay>();
     }
 
     void LateUpdate () {
         UpdateFloatingOrigin ();
-        if (PostFloatingOriginUpdate != null) {
-            PostFloatingOriginUpdate ();
-        }
+        PostFloatingOriginUpdate?.Invoke();
     }
 
     void UpdateFloatingOrigin () {
@@ -42,6 +43,7 @@ public class EndlessManager : MonoBehaviour {
             foreach (Transform t in physicsObjects) {
                 t.position -= originOffset;
             }
+            orbitLines.Move(-originOffset);
         }
     }
 

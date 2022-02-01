@@ -82,6 +82,7 @@ public class ShipHUD : MonoBehaviour {
 			if (lockedBody) {
 				lockOnUI.DrawLockOnUI (lockedBody, true);
 				DrawPlanetHUD (lockedBody);
+				FindObjectOfType<OrbitDebugDisplay>().centralBody = lockedBody;
 			} else {
 				SetHudActive (false);
 			}
