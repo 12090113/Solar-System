@@ -11,10 +11,10 @@ public class OrbitDebugDisplay : MonoBehaviour {
     public CelestialBody centralBody;
     public float width = 100;
     public bool useThickLines;
-    public bool yes = true;
+    public bool drawLines = false;
+    public float updateInterval = 100f;
 
-    public bool no = false;
-
+    public float time = 1000000000f;
     private Vector3[][] points;
     private int refFrameIndex = 0;
 
@@ -25,10 +25,25 @@ public class OrbitDebugDisplay : MonoBehaviour {
     }
 
     void Update () {
-
-        //if (yes) {
-            DrawOrbits ();
-        //}
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            drawLines = !drawLines;
+            if (!drawLines)
+            {
+                HideOrbits();
+                time = updateInterval + 1;
+            }
+        }
+        if (drawLines)
+        {
+            time += Time.deltaTime;
+            if (time > updateInterval)
+            {
+                DrawOrbits(true);
+                time = 0f;
+            }
+            else DrawOrbits(false);
+        }
     }
 
     private void FixedUpdate()
@@ -37,7 +52,7 @@ public class OrbitDebugDisplay : MonoBehaviour {
         Move(bodies[refFrameIndex].Rigidbody.velocity / 100);
     }
 
-    void DrawOrbits () {
+    void DrawOrbits (bool updateLines) {
         CelestialBody[] bodies = FindObjectsOfType<CelestialBody> ();
         var virtualBodies = new VirtualBody[bodies.Length];
         var drawPoints = new Vector3[bodies.Length][];
@@ -58,7 +73,7 @@ public class OrbitDebugDisplay : MonoBehaviour {
             }
         }
 
-        if (yes) {
+        if (updateLines) {
             // Simulate
             for (int step = 0; step < numSteps; step++) {
                 Vector3 referenceBodyPosition = (relativeToBody) ? virtualBodies[referenceFrameIndex].position : Vector3.zero;
@@ -68,9 +83,7 @@ public class OrbitDebugDisplay : MonoBehaviour {
                 }
                 // Update positions
                 for (int i = 0; i < virtualBodies.Length; i++) {
-                    Vector3 newPos = virtualBodies[i].position;
-                    if (step != 0 || no)
-                        newPos += virtualBodies[i].velocity * timeStep;
+                    Vector3 newPos = virtualBodies[i].position + virtualBodies[i].velocity * timeStep;
                     virtualBodies[i].position = newPos;
                     if (relativeToBody) {
                         var referenceFrameOffset = referenceBodyPosition - referenceBodyInitialPosition;
@@ -133,6 +146,7 @@ public class OrbitDebugDisplay : MonoBehaviour {
 
     public void Move(Vector3 move)
     {
+        if (!drawLines) return;
         for (int step = 0; step < points.Length; step++)
         {
             for (int i = 0; i < points[0].Length; i++)
