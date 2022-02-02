@@ -17,12 +17,17 @@ public class EndlessManager : MonoBehaviour {
         var ship = FindObjectOfType<Ship> ();
         var player = FindObjectOfType<PlayerController> ();
         var bodies = FindObjectsOfType<CelestialBody> ();
+        var objects = FindObjectsOfType<GravObj>();
 
         physicsObjects = new List<Transform> ();
         physicsObjects.Add (ship.transform);
         physicsObjects.Add (player.transform);
         foreach (var c in bodies) {
             physicsObjects.Add (c.transform);
+        }
+        foreach (var c in objects)
+        {
+            physicsObjects.Add(c.transform);
         }
 
         playerCamera = Camera.main;
@@ -40,10 +45,10 @@ public class EndlessManager : MonoBehaviour {
         float dstFromOrigin = originOffset.magnitude;
 
         if (dstFromOrigin > distanceThreshold) {
+            orbitLines.Move(-originOffset);
             foreach (Transform t in physicsObjects) {
                 t.position -= originOffset;
             }
-            orbitLines.Move(-originOffset);
         }
     }
 
