@@ -19,9 +19,7 @@ public class OrbitDebugDisplay : MonoBehaviour {
     private int refFrameIndex = 0;
 
     void Start () {
-        //if (Application.isPlaying) {
-        //    HideOrbits ();
-        //}
+        
     }
 
     void Update () {
@@ -49,7 +47,7 @@ public class OrbitDebugDisplay : MonoBehaviour {
     private void FixedUpdate()
     {
         CelestialBody[] bodies = FindObjectsOfType<CelestialBody>();
-        Move(bodies[refFrameIndex].Rigidbody.velocity / 100);
+        Move(bodies[refFrameIndex].Position - points[refFrameIndex][0]);
     }
 
     void DrawOrbits (bool updateLines) {

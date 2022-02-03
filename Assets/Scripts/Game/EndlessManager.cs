@@ -45,10 +45,10 @@ public class EndlessManager : MonoBehaviour {
         float dstFromOrigin = originOffset.magnitude;
 
         if (dstFromOrigin > distanceThreshold) {
-            orbitLines.Move(-originOffset);
             foreach (Transform t in physicsObjects) {
                 t.position -= originOffset;
             }
+            orbitLines.Move(-originOffset);
         }
     }
 
